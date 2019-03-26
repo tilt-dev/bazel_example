@@ -26,6 +26,7 @@ func main() {
 			"Pretz Sticks",
 			"Peaches in Agar Jelly",
 			"hello world",
+			"hi",
 		}
 
 		rand.Seed(time.Now().Unix())

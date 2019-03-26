@@ -7,7 +7,7 @@ k8s_object(
   # A template of a Kubernetes Deployment object yaml.
   template = ":deploy/vigoda.yaml",
 
-  cluster = "gke_blorg-dev_us-central1-b_blorg",
+  cluster = "docker-for-desktop-cluster",
 )
 
 k8s_object(
@@ -17,5 +17,19 @@ k8s_object(
   # A template of a Kubernetes Deployment object yaml.
   template = ":deploy/snack.yaml",
 
-  cluster = "gke_blorg-dev_us-central1-b_blorg",
+  cluster = "docker-for-desktop-cluster",
+
+  images = {
+    "gcr.io/windmill-public-containers/snack": "//snack:image",
+  }
+)
+
+k8s_object(
+  name = "snack-server-dev",
+  kind = "deployment",
+
+  # A template of a Kubernetes Deployment object yaml.
+  template = ":deploy/snack.yaml",
+
+  cluster = "docker-for-desktop-cluster",
 )
