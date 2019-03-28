@@ -18,18 +18,4 @@ k8s_object(
   template = ":deploy/snack.yaml",
 
   cluster = "docker-for-desktop-cluster",
-
-  images = {
-    "gcr.io/windmill-public-containers/snack": "//snack:image",
-  }
-)
-
-k8s_object(
-  name = "snack-server-dev",
-  kind = "deployment",
-
-  # A template of a Kubernetes Deployment object yaml.
-  template = ":deploy/snack.yaml",
-
-  cluster = "docker-for-desktop-cluster",
 )

@@ -65,7 +65,7 @@ def bazel_build(image, target):
     tag="image",
   )
 
-k8s_yaml(bazel_k8s(":snack-server-dev"))
+k8s_yaml(bazel_k8s(":snack-server"))
 k8s_yaml(bazel_k8s(":vigoda-server"))
 
 bazel_build('bazel/snack', "//snack:image")
