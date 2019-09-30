@@ -71,5 +71,5 @@ k8s_yaml(bazel_k8s(":vigoda-server"))
 bazel_build('bazel/snack', "//snack:image")
 bazel_build('bazel/vigoda', "//vigoda:image")
 
-k8s_resource('snack', port_forwards=9000)
-k8s_resource('vigoda', port_forwards=9001)
+k8s_resource('varowner-snack', port_forwards=9000)
+k8s_resource('varowner-vigoda', port_forwards=9001)
