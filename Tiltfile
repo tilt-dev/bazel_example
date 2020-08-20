@@ -1,4 +1,4 @@
-BAZEL_RUN_CMD = "bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 %s"
+BAZEL_RUN_CMD = "bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 %s %s"
 
 BAZEL_SOURCES_CMD = """
   bazel query 'filter("^//", kind("source file", deps(set(%s))))' --order_output=no
@@ -51,7 +51,7 @@ def bazel_k8s(target):
 
   return local("bazel run %s" % target)
 
-def bazel_build(image, target):
+def bazel_build(image, target, options=''):
   build_deps = str(local(BAZEL_BUILDFILES_CMD % target)).splitlines()
   watch_labels(build_deps)
 
@@ -60,7 +60,7 @@ def bazel_build(image, target):
 
   custom_build(
     image,
-    BAZEL_RUN_CMD % target,
+    BAZEL_RUN_CMD % (target, options),
     source_deps_files,
     tag="image",
   )
@@ -68,8 +68,8 @@ def bazel_build(image, target):
 k8s_yaml(bazel_k8s(":snack-server"))
 k8s_yaml(bazel_k8s(":vigoda-server"))
 
-bazel_build('bazel/snack', "//snack:image")
-bazel_build('bazel/vigoda', "//vigoda:image")
+bazel_build('bazel/snack', "//snack:image", "-- --norun")
+bazel_build('bazel/vigoda', "//vigoda:image", "-- --norun")
 
 k8s_resource('varowner-snack', port_forwards=9000)
 k8s_resource('varowner-vigoda', port_forwards=9001)
