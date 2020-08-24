@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	_ "github.com/tilt-dev/bazel_example/common"
 )
 
 func main() {
