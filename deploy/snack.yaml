@@ -1,25 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: varowner-snack
+  name: snack
   labels:
     app: snack
-    owner: varowner
 spec:
   selector:
     matchLabels:
       app: snack
-      owner: varowner
   template:
     metadata:
       labels:
         app: snack
         tier: web
-        owner: varowner
     spec:
       containers:
       - name: snack
-        image: bazel/snack
+        image: snack-image
         ports:
         - containerPort: 8083
         resources:
