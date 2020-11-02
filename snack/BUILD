@@ -1,8 +1,9 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary")
 load("@io_bazel_rules_docker//go:image.bzl", "go_image")
-load("@io_bazel_rules_docker//container:container.bzl", "container_bundle")
+load("@io_bazel_rules_docker//container:container.bzl", "container_bundle", "container_pull")
 
 package(default_visibility = ["//visibility:public"])
+
 
 go_binary(
   name = "snack",
@@ -12,6 +13,7 @@ go_binary(
 
 go_image(
     name = "image",
+    base = "@go_base_image//image",
     srcs = ["main.go"],
     importpath = "github.com/windmilleng/servantes/snack",
 )

@@ -18,7 +18,7 @@ func main() {
 		// log.Fatal("NullPointerError trying to service a request")
 		snacks := [...]string{
 			"Spam Musubi",
-			"Pocky Sticks",
+			"Pocky Sticks!",
 			"Kasugai Gummy",
 			"Green Tea Mochi",
 			"Shrimp-flavored Chips",

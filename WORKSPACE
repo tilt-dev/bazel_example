@@ -55,3 +55,12 @@ k8s_go_deps()
 load("@io_bazel_rules_docker//go:image.bzl", go_image_repos = "repositories")
 
 go_image_repos()
+
+load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
+
+container_pull(
+  name = "go_base_image",
+  registry = "docker.io",
+  repository = "library/golang",
+  tag = "alpine",
+)

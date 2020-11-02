@@ -53,6 +53,7 @@ def bazel_k8s(target):
   return local("bazel run %s" % target)
 
 RESTART_FILE = '/.restart-proc'
+
 TYPE_RESTART_CONTAINER_STEP = 'live_update_restart_container_step'
 
 KWARGS_BLACKLIST = [
@@ -96,10 +97,13 @@ def custom_build_with_restart(ref, command, deps, entrypoint, live_update,
     # declare a new docker build that adds a static binary of tilt-restart-wrapper
     # (which makes use of `entr` to watch files and restart processes) to the user's image
     df = '''
+    FROM alpine as alpine
+    RUN touch /.restart-proc
+
     FROM tiltdev/restart-helper:2020-10-16 as restart-helper
     FROM {}
     USER root
-    RUN ["touch", "{}"]
+    COPY --from=alpine /.restart-proc {}
     COPY --from=restart-helper /tilt-restart-wrapper /
     COPY --from=restart-helper /entr /
   '''.format(base_ref, restart_file)
@@ -146,15 +150,14 @@ def bazel_build(image, target, options='', live_update_go_binary=None, live_upda
   if live_update_go_binary_rule:
     local_resource(
       name='bazel-build-%s' % live_update_go_binary_rule.replace('/', '-'),
-      cmd=BAZEL_BUILD_CMD % live_update_go_binary_rule,
+      cmd=BAZEL_BUILD_CMD + ' ' + live_update_go_binary_rule,
       deps=source_deps_files)
 
   if live_update_go_binary:
-    custom_build_with_restart(
+    custom_build(
       image,
       command=command,
-      deps=source_deps_files + [live_update_go_binary],
-      entrypoint=live_update_go_dest,
+      deps=[live_update_go_binary],
       live_update=[
         sync(live_update_go_binary, live_update_go_dest),
       ],
@@ -167,13 +170,13 @@ def bazel_build(image, target, options='', live_update_go_binary=None, live_upda
     )
 
 k8s_yaml(bazel_k8s(":snack-server"))
-k8s_yaml(bazel_k8s(":vigoda-server"))
+#k8s_yaml(bazel_k8s(":vigoda-server"))
 
 bazel_build('snack-image', "//snack:image", "-- --norun",
             live_update_go_binary='./bazel-bin/snack/snack_/snack',
-            live_update_go_dest='/app/snack/image.binary', # This is where bazel puts the binary in the container.
+            live_update_go_dest='/app/snack/image.binary2', # This is where bazel puts the binary in the container.
             live_update_go_binary_rule='//snack:snack')
-bazel_build('vigoda-image', "//vigoda:image", "-- --norun")
+#bazel_build('vigoda-image', "//vigoda:image", "-- --norun")
 
 k8s_resource('snack', port_forwards=9000, resource_deps=['bazel-build---snack:snack'])
-k8s_resource('vigoda', port_forwards=9001)
+#k8s_resource('vigoda', port_forwards=9001)

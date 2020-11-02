@@ -1,3 +1,4 @@
+load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
 load("@io_bazel_rules_k8s//k8s:object.bzl", "k8s_object")
 
 k8s_object(
