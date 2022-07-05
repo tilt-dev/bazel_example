@@ -2,15 +2,16 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: tiltdev/tilt:latest
+      - image: docker/tilt:latest
 
     steps:
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.11
       - checkout
       - run: |
           apt install curl gnupg &&
           curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg &&
           mv bazel.gpg /etc/apt/trusted.gpg.d/ &&
           echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
-      - run: apt update && apt install -y git bazel python python-pip
-      - run: with-kind-cluster.sh ./test.sh
+      - run: apt update && apt install -y git bazel python python3-pip
+      - run: ctlptl create cluster kind --registry=ctlptl-registry && ./test.sh
